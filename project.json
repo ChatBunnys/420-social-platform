@@ -1,0 +1,27 @@
+{
+  "overview": "A cannabis-culture social platform with legitimate age verification, user profiles, social feed, Snapchat-style 24h stories, community groups, direct messaging, and an admin moderation panel — all wrapped in a green-and-black cannabis aesthetic.",
+  "features": [
+    "Age verification gate with DOB validation (21+)",
+    "Internet Identity login and user profiles with avatar upload",
+    "Social feed with text and photo posts, likes, and comments",
+    "Follow/unfollow users",
+    "Snapchat-style 24-hour ephemeral stories",
+    "Explore/discover page with trending content and user suggestions",
+    "Community groups by topic (strains, culture, advocacy, news)",
+    "1-on-1 direct messaging",
+    "Content reporting by users",
+    "Admin moderation panel (manage users, posts, reports)",
+    "Green and black cannabis leaf aesthetic, mobile-responsive"
+  ],
+  "category": "social",
+  "tags": [
+    "cannabis",
+    "social",
+    "420",
+    "stories",
+    "messaging",
+    "community",
+    "adult-content"
+  ],
+  "last_updated": "2026-04-12T22:12:17.259Z"
+}

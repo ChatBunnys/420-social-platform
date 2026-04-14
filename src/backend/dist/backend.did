@@ -1,0 +1,248 @@
+type UserProfile = 
+ record {
+   avatarUrl: opt text;
+   bio: text;
+   createdAt: Timestamp;
+   followerCount: nat;
+   followingCount: nat;
+   id: principal;
+   isAdmin: bool;
+   isSuspended: bool;
+   postCount: nat;
+   username: text;
+ };
+type User = 
+ record {
+   avatarUrl: opt text;
+   bio: text;
+   createdAt: Timestamp;
+   id: principal;
+   isAdmin: bool;
+   isSuspended: bool;
+   username: text;
+ };
+type Timestamp = int;
+type StoryId = text;
+type Story = 
+ record {
+   authorId: principal;
+   content: opt text;
+   createdAt: Timestamp;
+   expiresAt: Timestamp;
+   id: StoryId;
+   imageUrl: opt text;
+ };
+type ReportId = text;
+type Report = 
+ record {
+   contentId: text;
+   contentType: text;
+   createdAt: Timestamp;
+   details: opt text;
+   id: ReportId;
+   isReviewed: bool;
+   reason: text;
+   reporterId: principal;
+ };
+type PostId = text;
+type Post = 
+ record {
+   authorId: principal;
+   commentCount: nat;
+   content: text;
+   createdAt: Timestamp;
+   id: PostId;
+   imageUrl: opt text;
+   isDeleted: bool;
+   likeCount: nat;
+ };
+type MessageId = text;
+type Message = 
+ record {
+   content: text;
+   createdAt: Timestamp;
+   id: MessageId;
+   isRead: bool;
+   receiverId: principal;
+   senderId: principal;
+ };
+type GroupPost = 
+ record {
+   authorId: principal;
+   content: text;
+   createdAt: Timestamp;
+   groupId: GroupId;
+   id: text;
+   imageUrl: opt text;
+ };
+type GroupId = text;
+type Group = 
+ record {
+   category: text;
+   createdAt: Timestamp;
+   creatorId: principal;
+   description: text;
+   id: GroupId;
+   memberCount: nat;
+   name: text;
+ };
+type Conversation = 
+ record {
+   lastMessage: opt Message;
+   otherUserId: principal;
+   unreadCount: nat;
+ };
+type CommentId = text;
+type Comment = 
+ record {
+   authorId: principal;
+   content: text;
+   createdAt: Timestamp;
+   id: CommentId;
+   isDeleted: bool;
+   postId: PostId;
+ };
+service : {
+  addComment: (postId: text, content: text) ->
+   (variant {
+      err: text;
+      ok: Comment;
+    });
+  adminDeleteComment: (commentId: text) -> (variant {
+                                              err: text;
+                                              ok;
+                                            });
+  adminDeletePost: (postId: text) -> (variant {
+                                        err: text;
+                                        ok;
+                                      });
+  createGroup: (name: text, description: text, category: text) ->
+   (variant {
+      err: text;
+      ok: Group;
+    });
+  createGroupPost: (groupId: text, content: text, imageUrl: opt text) ->
+   (variant {
+      err: text;
+      ok: GroupPost;
+    });
+  createPost: (content: text, imageUrl: opt text) ->
+   (variant {
+      err: text;
+      ok: Post;
+    });
+  createStory: (content: opt text, imageUrl: opt text) ->
+   (variant {
+      err: text;
+      ok: Story;
+    });
+  deleteComment: (commentId: text) -> (variant {
+                                         err: text;
+                                         ok;
+                                       });
+  deleteGroup: (groupId: text) -> (variant {
+                                     err: text;
+                                     ok;
+                                   });
+  deletePost: (postId: text) -> (variant {
+                                   err: text;
+                                   ok;
+                                 });
+  dismissReport: (reportId: text) -> (variant {
+                                        err: text;
+                                        ok;
+                                      });
+  followUser: (targetId: principal) -> (variant {
+                                          err: text;
+                                          ok;
+                                        });
+  getActiveStories: () -> (vec Story) query;
+  getAdminStats: () ->
+   (record {
+      pendingReports: nat;
+      totalPosts: nat;
+      totalReports: nat;
+      totalUsers: nat;
+    }) query;
+  getAllActiveStories: () -> (vec Story) query;
+  getAllGroups: () -> (vec Group) query;
+  getAllPosts: () -> (vec Post) query;
+  getAllUsers: () -> (vec User) query;
+  getComments: (postId: text) -> (vec Comment) query;
+  getConversations: () -> (vec Conversation) query;
+  getExplorePosts: (limit: nat, offset: nat) -> (vec Post) query;
+  getFeedPosts: (limit: nat, offset: nat) -> (vec Post) query;
+  getFollowers: (userId: principal) -> (vec principal) query;
+  getFollowing: (userId: principal) -> (vec principal) query;
+  getGroup: (groupId: text) -> (opt Group) query;
+  getGroupMembers: (groupId: text) -> (vec principal) query;
+  getGroupPosts: (groupId: text, limit: nat, offset: nat) ->
+   (vec GroupPost) query;
+  getMessages: (otherUserId: principal) -> (vec Message) query;
+  getMyStories: () -> (vec Story) query;
+  getPost: (postId: text) -> (opt Post) query;
+  getReports: () -> (vec Report) query;
+  getUnreadCount: () -> (nat) query;
+  getUser: (userId: principal) -> (opt User) query;
+  getUserGroups: () -> (vec Group) query;
+  getUserPosts: (userId: principal, limit: nat, offset: nat) ->
+   (vec Post) query;
+  getUserProfile: (userId: principal) -> (opt UserProfile) query;
+  hasLikedPost: (postId: text) -> (bool) query;
+  isFollowing: (userId: principal, targetId: principal) -> (bool) query;
+  isGroupMember: (groupId: text) -> (bool) query;
+  joinGroup: (groupId: text) -> (variant {
+                                   err: text;
+                                   ok;
+                                 });
+  leaveGroup: (groupId: text) -> (variant {
+                                    err: text;
+                                    ok;
+                                  });
+  likePost: (postId: text) -> (variant {
+                                 err: text;
+                                 ok: nat;
+                               });
+  markMessagesRead: (otherUserId: principal) -> ();
+  registerUser: (username: text, bio: text, avatarUrl: opt text) ->
+   (variant {
+      err: text;
+      ok: User;
+    });
+  reportContent: (contentType: text, contentId: text, reason: text, details:
+   opt text) -> (variant {
+                   err: text;
+                   ok: Report;
+                 });
+  sendMessage: (receiverId: principal, content: text) ->
+   (variant {
+      err: text;
+      ok: Message;
+    });
+  setAdmin: (userId: principal, isAdminFlag: bool) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  suspendUser: (userId: principal) -> (variant {
+                                         err: text;
+                                         ok;
+                                       });
+  unfollowUser: (targetId: principal) -> (variant {
+                                            err: text;
+                                            ok;
+                                          });
+  unlikePost: (postId: text) -> (variant {
+                                   err: text;
+                                   ok: nat;
+                                 });
+  unsuspendUser: (userId: principal) -> (variant {
+                                           err: text;
+                                           ok;
+                                         });
+  updateProfile: (username: text, bio: text, avatarUrl: opt text) ->
+   (variant {
+      err: text;
+      ok: User;
+    });
+}
